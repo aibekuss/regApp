@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+.env
+*.log
+dist/
+build/
+frontend/.dart_tool/
+frontend/build/
+backend/__pycache__/
+backend/students.db
