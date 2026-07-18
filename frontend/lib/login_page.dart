@@ -215,7 +215,7 @@ class _LoginPageState extends State<LoginPage>
                                     style: const TextStyle(color: Colors.white),
                                     decoration: _decoration(
                                       icon: Icons.alternate_email_rounded,
-                                      hint: "Электронды пошта немесе телефон",
+                                      hint: "Электронды почта немесе телефон нөмері",
                                     ),
                                     validator: (value) =>
                                         (value == null || value.trim().isEmpty)

@@ -262,7 +262,7 @@ class _RegisterPageState extends State<RegisterPage>
                                       if (value == null || value.trim().isEmpty)
                                         return "Жас міндетті.";
                                       if (int.tryParse(value.trim()) == null)
-                                        return "Жас сан болуы керек.";
+                                        return "Жас сан форматта болуы керек.";
                                       return null;
                                     },
                                   ),
@@ -275,11 +275,11 @@ class _RegisterPageState extends State<RegisterPage>
                                     keyboardType: TextInputType.phone,
                                     decoration: _decoration(
                                       icon: Icons.phone_outlined,
-                                      hint: "Телефон нөмірі",
+                                      hint: "Телефон нөмері",
                                     ),
                                     validator: (value) {
                                       if (value == null || value.trim().isEmpty)
-                                        return "Телефон міндетті.";
+                                        return "Телефон нөмері міндетті.";
                                       if (!_phoneRegex.hasMatch(value.trim()))
                                         return "Қате телефон форматы.";
                                       return null;
@@ -294,13 +294,13 @@ class _RegisterPageState extends State<RegisterPage>
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: _decoration(
                                       icon: Icons.alternate_email_rounded,
-                                      hint: "Электронды пошта",
+                                      hint: "Электронды почта",
                                     ),
                                     validator: (value) {
                                       if (value == null || value.trim().isEmpty)
-                                        return "Пошта міндетті.";
+                                        return "Почта міндетті.";
                                       if (!_emailRegex.hasMatch(value.trim()))
-                                        return "Қате пошта форматы.";
+                                        return "Қате почта форматы.";
                                       return null;
                                     },
                                   ),

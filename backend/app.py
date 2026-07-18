@@ -55,7 +55,7 @@ def register():
     if email_taken or phone_taken:
         return jsonify({
             "success": False, 
-            "message": "This email or phone number is already registered."
+            "message": "Бұл электронды почта немесе телефон нөмірі бұрын тіркелген."
         }), 409
 
     # 3. Create user in SQLite (returns user_id, hashed_password, created_at)
@@ -89,7 +89,7 @@ def login():
     password = data.get("password") or ""
 
     if not (email or phone) or not password:
-        return jsonify({"success": False, "message": "Email/Phone and password are required."}), 400
+        return jsonify({"success": False, "message": "Электронды почта/Телефон нөмері және құпия сөз міндетті."}), 400
 
     user = None
     # Email арқылы іздеу
@@ -109,7 +109,7 @@ def login():
 
     # Парольді хэшпен салыстырып тексеру
     if user is None or not SecurityUtils.verify_password(password, user["password_hash"]):
-        return jsonify({"success": False, "message": "Invalid email/phone or password."}), 401
+        return jsonify({"success": False, "message": "Жарамсыз құпия сөз."}), 401
 
     # JWT токен генерациялау
     token = SecurityUtils.generate_jwt(user["id"], user["email"])
@@ -172,24 +172,24 @@ def update_profile():
     phone = (data.get("phone") or "").strip()
 
     if not all([first_name, last_name, phone]) or age in (None, ""):
-        return jsonify({"success": False, "message": "First name, last name, age, and phone are required."}), 400
+        return jsonify({"success": False, "message": "Аты-жөні, Жас немесе Телефон/Почта міндетті."}), 400
 
     try:
         age_int = int(age)
     except (ValueError, TypeError):
-        return jsonify({"success": False, "message": "Age must be a valid number."}), 400
+        return jsonify({"success": False, "message": "Жас сан форматта болуы керек."}), 400
 
     # 1. Update SQLite DB
     success = update_user_profile(user_id, first_name, last_name, age_int, phone)
     if not success:
-        return jsonify({"success": False, "message": "Profile update failed or user not found."}), 404
+        return jsonify({"success": False, "message": "Профильді жаңарту сәтсіз аяқталды немесе пайдаланушы табылмады."}), 404
 
     # 2. Sync changes to Google Sheets
     update_user_in_sheet(user_id, first_name, last_name, age_int, phone)
 
     return jsonify({
         "success": True,
-        "message": "Profile updated successfully."
+        "message": "Профиль сәтті жаңартылды."
     }), 200
 
 
@@ -204,17 +204,17 @@ def forgot_password():
     email = (data.get("email") or "").strip().lower()
 
     if not email:
-        return jsonify({"success": False, "message": "Email is required."}), 400
+        return jsonify({"success": False, "message": "Электронды почта міндетті."}), 400
 
     user = get_user_by_email(email)
     if not user:
-        return jsonify({"success": False, "message": "No user found with this email."}), 404
+        return jsonify({"success": False, "message": "Бұл электронды почта бойынша колданушы табылмады."}), 404
 
     # TODO: Generate a reset token, store it, and send a real email.
     # Currently acting as a backend structure ready for implementation.
     return jsonify({
         "success": True,
-        "message": "Password reset mock successful. Ready for SMTP configuration."
+        "message": "Құпия сөзді қалпына келтіруді имитациялау сәтті өтті. SMTP баптауына дайын."
     }), 200
 
 

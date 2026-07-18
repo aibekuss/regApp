@@ -129,7 +129,7 @@ class HomePage extends StatelessWidget {
                         const SizedBox(height: 12),
                         _InfoCard(
                           icon: Icons.alternate_email_rounded,
-                          label: 'Электронды пошта',
+                          label: 'Электронды почта',
                           value: user['email']?.toString() ?? '—',
                           color: const Color(0xFFFFB25C),
                         ),

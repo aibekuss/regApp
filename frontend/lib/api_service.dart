@@ -1,18 +1,55 @@
-// api_service.dart
-//
-// API Service for handling authentication requests (Register, Login, Logout).
-// Integrates with SharedPreferences to persist the JWT token.
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  // Өзіңнің бэкенд URL-іңді жаз.
   static const String baseUrl = 'http://172.20.10.3:5000';
   static const String _tokenKey = 'auth_token';
 
-  // 1. ТІРКЕЛУ (REGISTER)
+  static Future<Map<String, dynamic>> login({
+    required String emailOrPhone,
+    required String password,
+  }) async {
+    try {
+      bool isEmail = emailOrPhone.contains('@');
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          isEmail ? 'email' : 'phone': emailOrPhone,
+          'password': password,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        final token = data['token'];
+        if (token != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString(_tokenKey, token);
+        }
+
+        return {
+          'success': true,
+          'user': data['user'] ?? {},
+          'message': data['message'] ?? 'Қош келдіңіз!',
+        };
+      } else {
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Қате логин немесе құпия сөз.',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Сервермен байланыс үзілді: $e',
+      };
+    }
+  }
+
   static Future<Map<String, dynamic>> register({
     required String firstName,
     required String lastName,
@@ -58,56 +95,11 @@ class ApiService {
     }
   }
 
-  // 2. ЖҮЙЕГЕ КІРУ (LOGIN)
-  static Future<Map<String, dynamic>> login({
-    required String emailOrPhone,
-    required String password,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email_or_phone': emailOrPhone,
-          'password': password,
-        }),
-      );
-
-      final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        final token = data['token'];
-        if (token != null) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString(_tokenKey, token);
-        }
-
-        return {
-          'success': true,
-          'user': data['user'] ?? {},
-          'message': data['message'] ?? 'Қош келдіңіз!',
-        };
-      } else {
-        return {
-          'success': false,
-          'message': data['message'] ?? 'Қате логин немесе құпия сөз.',
-        };
-      }
-    } catch (e) {
-      return {
-        'success': false,
-        'message': 'Сервермен байланыс үзілді: $e',
-      };
-    }
-  }
-
-  // 3. ЖҮЙЕДЕН ШЫҒУ (LOGOUT)
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tokenKey);
   }
 
-  // Токенді алу көмекші функциясы
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_tokenKey);

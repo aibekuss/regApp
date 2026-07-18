@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DATABASE_PATH = os.getenv("DATABASE_PATH", "students.db")
-GOOGLE_SHEETS_WEBHOOK_URL = os.getenv("GOOGLE_SHEET_URL", "")
+GOOGLE_SHEETS_WEBHOOK_URL = os.getenv("GOOGLE_SHEET_URL", "https://script.google.com/macros/s/AKfycbxcVoABW0Cr__eN8eA4qDGICEWUVkmC8pnrLx_FvNkxGB64FnjDgKE7FYQRUj1RlnkmZQ/exec")
 
 class Config:
     DATABASE_PATH = DATABASE_PATH
